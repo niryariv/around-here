@@ -4,6 +4,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.css" />
+	<link rel="stylesheet" href="lib/leaflet.locate.css" />
+	<!-- link rel="stylesheet" href="lib/leaflet.label.css" /> -->
+	
 	<style type="text/css">
 		body {
 		    padding: 0;
@@ -12,35 +15,37 @@
 		html, body, #map {
 		    height: 100%;
 		}
+		a {
+			text-decoration: none;
+		}
 	</style>
 
 	<script src="http://cdn.leafletjs.com/leaflet-0.4/leaflet.js"></script>
-	<script src="zepto.js"></script>
+	<script src="lib/leaflet.locate.js"></script>
+	<!-- script src="lib/leaflet.label.js"></script -->
+	
+	<script src="lib/zepto.js"></script>
 </head>
 
 <body>
 <div id="map"></div>
 <script>
 
-	var map = L.map('map');
-
-	L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-	}).addTo(map);
-
-
+    // render wiki article locations as map markers
     function renderData(wiki_articles){    
     	wiki_articles.forEach(
     		function (item){
 				marker = L.marker([item.lat, item.lng])
 						.bindPopup("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>")
 						.addTo(map);
-
+						//.bindLabel("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>", { noHide: false })
+						//.showLabel();
     		}
     	);
     }
 
+
+    // get wiki article data from wikilocation.org
     function getData(here){
      	$.ajax({
       		url: "http://api.wikilocation.org/articles?jsonp=?",
@@ -55,19 +60,40 @@
     }
 
 
+    // location found, render map
 	function onLocationFound(here) {
 		L.circle(here.latlng, 10, { weight: 3, color: '#942EBD', fill: true, fillColor: '#EDED1C'}).addTo(map);
 		getData(here);
 	}
 
+
+	// no access to location API, show message
 	function onLocationError(e) {
 		$('#map').html('<p style="margin:10%;padding:10%;background-color:white;text-align:center;font-size:2em">Please allow viewing location for this to work<br><a href="#" onclick="location.reload();">Okay</a></p>');
 
 	}
 
+
+	// --- start ---
+
+	var map = L.map('map');
+
+	// define map style
+	L.tileLayer(
+		'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', 
+		{
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+		}
+	).addTo(map);
+
+	// add "home" control
+	L.control.locate({position: 'topright'}).addTo(map);
+
+
+	// get current location
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
-
 	map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true});
 </script>
 

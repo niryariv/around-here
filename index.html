@@ -21,6 +21,7 @@
 <body>
 <div id="map"></div>
 <script>
+
 	var map = L.map('map');
 
 	L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
@@ -28,24 +29,46 @@
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 	}).addTo(map);
 
-	function onLocationFound(e) {
-		var radius = e.accuracy / 2;
 
-		L.marker(e.latlng).addTo(map)
-			.bindPopup("You are within " + radius + " meters from this point").openPopup();
+    function renderData(wiki_articles){    
+    	wiki_articles.forEach(
+    		function (item){
+				marker = L.marker([item.lat, item.lng])
+						.bindPopup("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>")
+						.addTo(map);
 
-		L.circle(e.latlng, radius).addTo(map);
+    		}
+    	);
+    }
+
+    function getData(here){
+     	$.ajax({
+      		url: "http://api.wikilocation.org/articles?jsonp=?",
+      		data: {
+				lat:here.latlng.lat, 
+				lng:here.latlng.lng, 
+				radius:20000,
+				limit:20
+			},
+			success: function(d) { renderData(d['articles']) }
+		});
+    }
+
+
+	function onLocationFound(here) {
+		L.circle(here.latlng, 10, { weight: 3, color: '#942EBD', fill: true, fillColor: '#EDED1C'}).addTo(map);
+		getData(here);
 	}
 
 	function onLocationError(e) {
-		$('#map').html('<p style="background-color:white; text-align:center">Please allow viewing location for this to work</p>');
-		// alert(e.message);
+		$('#map').html('<p style="margin:10%;padding:10%;background-color:white;text-align:center;font-size:2em">Please allow viewing location for this to work<br><a href="#" onclick="location.reload();">Okay</a></p>');
+
 	}
 
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
 
-	map.locate({setView: true, maxZoom: 16});
+	map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true});
 </script>
 
 </body>

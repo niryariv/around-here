@@ -22,6 +22,7 @@
 
 	<script src="http://cdn.leafletjs.com/leaflet-0.4/leaflet.js"></script>
 	<script src="lib/leaflet.locate.js"></script>
+	<script src="lib/leaflet.providers.js"></script>
 	<!-- script src="lib/leaflet.label.js"></script -->
 	
 	<script src="lib/zepto.js"></script>
@@ -80,12 +81,15 @@
 
 	// define map style
 	L.tileLayer(
+		// 'http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-simple/{z}/{x}/{y}.png',
 		'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', 
 		{
 			maxZoom: 18,
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 		}
 	).addTo(map);
+
+
 
 	// add "home" control
 	L.control.locate({position: 'topright'}).addTo(map);
@@ -94,7 +98,7 @@
 	// get current location
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
-	map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true});
+	map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true, maximumAge: 10});
 </script>
 
 </body>

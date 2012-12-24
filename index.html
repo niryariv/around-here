@@ -74,6 +74,9 @@
 
 	}
 
+	function homeLocation(){
+		map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true, maximumAge: 10});
+	}
 
 	// --- start ---
 
@@ -98,7 +101,16 @@
 	// get current location
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
-	map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true, maximumAge: 10});
+	homeLocation();
+
+	// get current location whenever the window is focused
+	window.addEventListener(
+		"focus", 
+		function(e) { homeLocation(); }, 
+		false
+	);
+
+
 </script>
 
 </body>

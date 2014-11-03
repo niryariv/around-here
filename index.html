@@ -38,10 +38,8 @@
     	wiki_articles.forEach(
     		function (item){
 				marker = L.marker([item.lat, item.lon])
-						.bindPopup("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>")
+						.bindPopup("<a href=\"http://en.wikipedia.org/wiki?curid=" + item.pageid + "\" target='_self'>" + item.title + "</a>")
 						.addTo(map);
-						//.bindLabel("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>", { noHide: false })
-						//.showLabel();
     		}
     	);
     }

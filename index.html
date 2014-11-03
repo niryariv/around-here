@@ -37,7 +37,7 @@
     function renderData(wiki_articles){    
     	wiki_articles.forEach(
     		function (item){
-				marker = L.marker([item.lat, item.lng])
+				marker = L.marker([item.lat, item.lon])
 						.bindPopup("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>")
 						.addTo(map);
 						//.bindLabel("<a href='" + item.mobileurl + "' target='_self'>" + item.title + "</a>", { noHide: false })
@@ -47,18 +47,36 @@
     }
 
 
-    // get wiki article data from wikilocation.org
+  //   // get wiki article data from wikilocation.org
+  //   function getData(here){
+  //    	$.ajax({
+  //     		url: "http://api.wikilocation.org/articles?jsonp=?",
+  //     		data: {
+		// 		lat:here.latlng.lat, 
+		// 		lng:here.latlng.lng, 
+		// 		radius:20000,
+		// 		limit:20
+		// 	},
+		// 	success: function(d) { renderData(d['articles']) }
+		// });
+  //   }
+
+    // get it directly from Wikipedia API
     function getData(here){
-     	$.ajax({
-      		url: "http://api.wikilocation.org/articles?jsonp=?",
-      		data: {
-				lat:here.latlng.lat, 
-				lng:here.latlng.lng, 
-				radius:20000,
-				limit:20
-			},
-			success: function(d) { renderData(d['articles']) }
+    	$.ajax({
+		    url: "https://en.wikipedia.org/w/api.php",
+		    jsonp: "callback",
+		    dataType: "jsonp",
+		    data: {
+		        gscoord: here.latlng.lat + '|' + here.latlng.lng,
+		        action: 'query',
+		        list: 'geosearch',
+		        gsradius: 10000,
+		        format:'json'
+		    },
+		    success: function(d) { console.log(d.query.geosearch) ; renderData(d.query.geosearch) }
 		});
+
     }
 
 

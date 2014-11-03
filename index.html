@@ -59,9 +59,10 @@
 		        action: 'query',
 		        list: 'geosearch',
 		        gsradius: 10000,
+		        gslimit: 30,
 		        format:'json'
 		    },
-		    success: function(d) { console.log(d.query.geosearch) ; renderData(d.query.geosearch) }
+		    success: function(d) { renderData(d.query.geosearch) }
 		});
 
     }
@@ -90,9 +91,8 @@
 
 	// define map style
 	L.tileLayer(
-		// 'http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-simple/{z}/{x}/{y}.png',
-		//'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', 
-		'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+		// 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+		'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
 		{
 			maxZoom: 18
 		}

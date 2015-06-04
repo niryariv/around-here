@@ -1,0 +1,12 @@
+before_script:
+  - cd behat
+  # Instead of composer install, we save time by getting
+  # a gzipped file with the vendor and bin directories.
+  - tar zxf behat-vendor.tar.gz
+  - cp behat.local.yml.example behat.local.yml
+  - cd -
+
+script:
+  # Functional testing.
+  - cd behat
+  - ./bin/behat --tags=~wip
